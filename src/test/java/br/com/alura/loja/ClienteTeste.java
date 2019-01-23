@@ -3,12 +3,16 @@ package br.com.alura.loja;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import br.com.alura.loja.modelo.Carrinho;
+
+import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 
 
@@ -28,7 +32,7 @@ public class ClienteTeste {
 	
 	
 	@Test
-	public void testaBuscaDeCarrinhoComRetornoEsperado(){
+	public void testaBuscaDeCarrinhoComRetornoEsperadoXML(){
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8081/");
 		
