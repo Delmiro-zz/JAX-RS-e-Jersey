@@ -15,7 +15,7 @@ public class CarrinhoDAO {
 	static {
 		Produto videogame = new Produto(6237, "Videogame 4", 4000, 1);
 		Produto esporte = new Produto(3467, "Jogo de esporte", 60, 2);
-		Carrinho carrinho = new Carrinho().adiciona(videogame).adiciona(esporte).para("Rua Vergueiro 3185, 8 andar", "S‹o Paulo").setId(1l);
+		Carrinho carrinho = new Carrinho().adiciona(videogame).adiciona(esporte).para("Rua Vergueiro 3185, 8 andar", "Sao Paulo").setId(1l);
 		banco.put(1l, carrinho);
 	}
 	

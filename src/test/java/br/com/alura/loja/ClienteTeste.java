@@ -2,29 +2,23 @@ package br.com.alura.loja;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import br.com.alura.loja.modelo.Carrinho;
 import br.com.alura.loja.modelo.Produto;
-
-import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 
 
 public class ClienteTeste {
-	
+
 	private HttpServer server;
-	private WebTarget target;
-	private Client client;
 	
 	@Before
 	public void startServidor(){
@@ -39,21 +33,25 @@ public class ClienteTeste {
 	
 	@Test
 	public void testaBuscaDeCarrinhoComRetornoEsperadoXML(){
-		this.client = ClientBuilder.newClient();
-		this.target = client.target("http://localhost:8081/");
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target("http://localhost:8084");
 		
-		String conteudo = target.path("/carrinhos").request().get(String.class);
+		String conteudo = target.path("/carrinhos/1").request().get(String.class);
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
-		
 		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
+		
 	}
 	
 	@Test
 	public void testaEntradaDeNovosCarrinhos(){
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target("http://localhost:8084");
+		
 		Carrinho carrinho = new Carrinho();
-		carrinho.adiciona(new Produto(314, "Microfone", 37, 1));
-		carrinho.setRua("Rua Doutor Manuel Teófilo");
-		carrinho.setCidade("Itaperi City");
+		carrinho.adiciona(new Produto(314L, "Microfone", 999, 1));
+		carrinho.setRua("Rua Vergueiro");
+		carrinho.setCidade("Sao Paulo");
+		carrinho.setId(1);
 		
 		//Transforma o carrinho em xml
 		String xml = carrinho.toXML();
@@ -67,8 +65,8 @@ public class ClienteTeste {
 		//Recupera a URI da requisição
 		String location = response.getHeaderString("Location");
 		//Recupera o objeto que tá na URI
-		String conteudoUri = client.target(location).request().get(String.class);
+		String conteudo = client.target(location).request().get(String.class);
 		//Verifica se o retorno tem o objeto passado
-		Assert.assertTrue(conteudoUri.contains("Microfone"));
+		Assert.assertTrue(conteudo.contains("Microfone"));
 	}
 }
