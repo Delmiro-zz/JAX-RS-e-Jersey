@@ -18,8 +18,6 @@ import org.junit.Test;
 import br.com.alura.loja.modelo.Carrinho;
 import br.com.alura.loja.modelo.Produto;
 
-import com.thoughtworks.xstream.XStream;
-
 
 public class ClienteTeste {
 
@@ -44,10 +42,8 @@ public class ClienteTeste {
 	
 	@Test
 	public void testaBuscaDeCarrinhoComRetornoEsperadoXML(){
-		String conteudo = target.path("/carrinhos/1").request().get(String.class);
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
+		Carrinho carrinho = target.path("/carrinhos/1").request().get(Carrinho.class);
 		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
-		
 	}
 	
 	@Test
@@ -58,10 +54,8 @@ public class ClienteTeste {
 		carrinho.setCidade("Sao Paulo");
 		carrinho.setId(1);
 		
-		//Transforma o carrinho em xml
-		String xml = carrinho.toXML();
 		//Simula a representação da URI
-		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		Entity<Carrinho> entity = Entity.entity(carrinho, MediaType.APPLICATION_XML);
 		//Realiza uma requisição do tipo POST
 		Response response = target.path("/carrinhos").request().post(entity);
 		//Verifica se requisição foi com sucesso
@@ -70,8 +64,8 @@ public class ClienteTeste {
 		//Recupera a URI da requisição
 		String location = response.getHeaderString("Location");
 		//Recupera o objeto que tá na URI
-		String conteudo = client.target(location).request().get(String.class);
+		Carrinho carrinhoCarregado = client.target(location).request().get(Carrinho.class);
 		//Verifica se o retorno tem o objeto passado
-		Assert.assertTrue(conteudo.contains("Microfone"));
+		Assert.assertEquals("Microfone", carrinhoCarregado.getProdutos().get(0).getNome());
 	}
 }
